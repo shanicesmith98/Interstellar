@@ -2,6 +2,7 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
+    pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {
@@ -13,32 +14,39 @@ const config = {
         preload: preload,
         create: create,
         update: update
+    },
+    audio: {
+        disableWebAudio: true
     }
 };
   
 const game = new Phaser.Game(config);
 
 // To-Do:
-// Collision with stars
-// Score system with stars
-// Animation with stars (transform/scale)
+// Look into music format for phaser (convert to ogg + mp3)
+// Animation with stars (rotation)
 // Scale objects based on x/y of screen (16:9) **
-// Add unit tests at end (headless mode in firefox/visual testing framework)
 
 function preload ()
 {
-    this.load.image('sky', './assets/0006.png');
+    this.load.image('sky', './assets/sky.png');
     this.load.image('ground', './assets/platform.png');
     this.load.image('star', './assets/star.png');
+    this.load.audio('background_music', ['./assets/music_bg.ogg', '/.assets/music_bg.mp3']);
     this.load.spritesheet('dude', 
         './assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
+    
 }
 
 function create() {
+    let music = this.sound.add('background_music', { loop: true });
+    music.play();
+
     let score = 0;
     let scoreText;
+
     this.add.image(0, 0, 'sky').setOrigin(0, 0);
     
     platforms = this.physics.add.staticGroup();
@@ -103,12 +111,14 @@ function create() {
 
     this.add.text(300, 10, "Interstellar", { font: "40px Times New Roman", fill: "#ffffff"});
     this.add.text(340, 60, "by Shanice", { font: "20px Times New Roman", fill: "#ffffff"});
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#fff' });
+    
+    
 }
 
 function update ()
 {
+    // TO-DO: add translate for platforms (x axis)
     if (cursors.left.isDown)
     {
         player.setVelocityX(-160);
@@ -129,6 +139,5 @@ function update ()
     {
         player.setVelocityY(-330);
     }
-
     
 }
